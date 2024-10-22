@@ -1,4 +1,5 @@
 const {Router} = require('express');
+const {userModel, purchaseModel} = require("../db");
 
 const userRouter = Router(); // userRouter is the place that will handel the incoming requests
 
