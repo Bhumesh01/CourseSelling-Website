@@ -47,7 +47,7 @@ adminRouter.post('/signup', async (req, res)=>{
     }
     catch(err){
         res.json({
-            msg: err
+            msg: err.message
         });
     }
 })
@@ -99,24 +99,81 @@ adminRouter.post('/course', async (req, res)=>{
     }
     catch(err){
         res.status(403).json({
-            msg: "Check The Details of the Course"
+            msg: err.message
         })
     }
 })
-adminRouter.put('/add', (req, res)=>{
+adminRouter.put('/add', async (req, res)=>{
+    try{
+        const adminId = req.adminId;
+        const {title, description ,price, imageUrl, courseId} = req.body;
+        const course = await courseModel.updateOne({
+            _id: courseId,
+            creatorId: adminId
+        },{
+            title: title,
+            description: description,
+            imageUrl: imageUrl,
+            price: price
+        });
+        res.json({
+            msg: "Course content is updated",
+            courseId: course
+        })
+    }
+    catch(err){
+        msg: err.message;
+    }
     res.json({
         msg: "update course endpoint"
     })
 })
-adminRouter.delete('/delete', (req, res)=>{
-    res.json({
-        msg: "course delete endpoint"
-    })
+adminRouter.delete('/delete', async (req, res)=>{
+    try{
+        const adminId = req.adminId;
+        const {courseId} = req.body;
+        const result = await courseModel.deleteOne({
+            _id: courseId,
+            creatorId: adminId
+        });
+        if(result.deletedCount === 0){
+            return res.status(404).json({
+                msg: "Cannot find the course"
+            });
+        }
+        return res.json({
+            msg: "Course Deleted Successfully"
+        })
+    }
+    catch(err){
+        res.status(403).json({
+            msg: "Unauthorized",
+            error: err.message
+        })
+    }
 })
-adminRouter.get('/course/bulk', (req, res)=>{
-    res.json({
-        msg: "displays all courses endpoint"
-    })
+adminRouter.get('/course/bulk', async (req, res)=>{
+    try{
+        const adminId = req.adminId;
+        const courses =await courseModel.find({
+            creatorId: adminId
+        });
+        if(!courses){
+            return res.status(404).json({
+                msg: "No Course exists"
+            })
+        }
+        return res.json({
+            msg: "You can View the courses",
+            courses: courses
+        })
+    }
+    catch(err){
+        res.status(403).json({
+            msg: "Unauthorized",
+            error: err.message
+        })
+    }
 })
 module.exports = {
     adminRouter: adminRouter
