@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">CourseHub</div>
+        <div class="nav-items">
+            <button id="loginBtn" onclick="showLogin()">Login</button>
+            <button id="signupBtn" onclick="showSignup()">Signup</button>
+            <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="auth-form">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p>Don't have an account? <span onclick="showSignup()" class="link">Signup</span></p>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm" class="auth-form" style="display: none;">
+        <h2>Signup</h2>
+        <input type="text" id="firstName" placeholder="First Name">
+        <input type="text" id="lastName" placeholder="Last Name">
+        <input type="email" id="signupEmail" placeholder="Email">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <button onclick="signup()">Signup</button>
+        <p>Already have an account? <span onclick="showLogin()" class="link">Login</span></p>
+    </div>
+
+    <!-- Courses Container -->
+    <div id="coursesContainer">
+        <h2>Available Courses</h2>
+        <div id="coursesList" class="courses-grid"></div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
