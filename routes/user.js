@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {userModel, purchaseModel} = require("../db");
+const {userModel, purchaseModel, courseModel} = require("../db");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {z} = require('zod');
@@ -79,8 +79,16 @@ userRouter.post('/signin', async (req, res)=>{
 });
 userRouter.use(userMiddleware);
 userRouter.get('/purchase', async (req, res)=>{
+    const userId = req.userId;
+    const purchases = await purchaseModel.find({
+        userId: userId
+    });
+    const courseData = await courseModel.find({
+        _id: purchases.map((purchase)=> (purchase.courseId))
+    })
     res.json({
-        msg: "views courses purchased by user endpoint"
+        purchases: purchases,
+        courseData: courseData
     })
 });
 module.exports = {
