@@ -78,7 +78,7 @@ userRouter.post('/signin', async (req, res)=>{
     }
 });
 userRouter.use(userMiddleware);
-userRouter.get('/purchase', (req, res)=>{
+userRouter.get('/purchase', async (req, res)=>{
     res.json({
         msg: "views courses purchased by user endpoint"
     })
