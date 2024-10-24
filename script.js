@@ -1,22 +1,22 @@
-// Base URL for API
-const BASE_URL = 'http://localhost:3000';
+// // Base URL for API
+// const BASE_URL = 'http://localhost:3000';
 
-// Axios instance with base configuration
-const api = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+// // Axios instance with base configuration
+// const api = axios.create({
+//     baseURL: BASE_URL,
+//     headers: {
+//         'Content-Type': 'application/json'
+//     }
+// });
 
 // Add token to requests if it exists
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+// api.interceptors.request.use(config => {
+//     const token = localStorage.getItem('token');
+//     if (token) {
+//         config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+// });
 
 // UI Functions
 function showLogin() {
@@ -46,7 +46,7 @@ async function login() {
     const password = document.getElementById('loginPassword').value;
 
     try {
-        const response = await api.post('/user/login', { email, password });
+        const response = await axios.post('http://localhost:3000/user/login', { email, password });
         localStorage.setItem('token', response.data.token);
         showCourses();
         fetchCourses();
@@ -63,7 +63,7 @@ async function signup() {
     const password = document.getElementById('signupPassword').value;
 
     try {
-        await api.post('/user/signup', {
+        await axios.post('http://localhost:3000/user/signup', {
             firstName,
             lastName,
             email,
@@ -88,7 +88,13 @@ function logout() {
 // Course Functions
 async function fetchCourses() {
     try {
-        const response = await api.get('/course/preview');
+        const token = localStorage.getItem('token'); // Get the token from localStorage
+        if (!token) {
+            alert('Please login first.');
+            showLogin();
+            return;
+        }
+        const response = await axios.get('http://localhost:3000/course/preview', {headers: { Authorization: `Bearer ${token}`}});
         displayCourses(response.data.msg);
     } catch (error) {
         console.error('Error fetching courses:', error);
@@ -127,7 +133,7 @@ async function purchaseCourse(courseId) {
     }
 
     try {
-        const response = await api.post('/course/purchase', { courseId });
+        const response = await axios.post('http://localhost:3000/course/purchase', { courseId },{ headers: { Authorization: `Bearer ${token}` }});
         alert('Course purchased successfully!');
     } catch (error) {
         alert('Failed to purchase course. Please try again.');
